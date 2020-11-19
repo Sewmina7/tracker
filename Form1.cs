@@ -36,6 +36,7 @@ namespace TrackerV2
         string email = "";
         public Form1(string _email)
         {
+            Properties.Settings.Default.Reset();
             InitializeComponent();
             email = _email;
 
@@ -61,8 +62,6 @@ namespace TrackerV2
             Application.Exit();
         }
         Task curTask = new Task("Tracker");
-        Task prevTask = new Task("Tracker");
-        string prevTaskName = "Tracker";
         private void update_Tick(object sender, EventArgs e)
         {
             DateTime startOfDay = DateTime.Now.Date;
@@ -71,37 +70,20 @@ namespace TrackerV2
             label3.Text = progressBar1.Value + " %";
             string curTaskName= GetActiveWindowTitle();
             if(curTaskName == null) { return; }
-            if (curTaskName.Contains("-"))
+          /*  if (curTaskName.Contains("-"))
             {
                 curTaskName = curTaskName.Substring(curTaskName.LastIndexOf('-'));
-            }
+            }*/
             double timeSpent = (curTask.endTime - curTask.startedTime).TotalSeconds;
             label2.Text = curTask.taskName +"  :"+ timeSpent;
 
-
-            if(timeSpent > 10)
-            {
-                prevTask = curTask;
-            }
-            if(prevTaskName != prevTask.taskName)
-            {
-                prevTaskName = prevTask.taskName;
-                addTaskToCache(prevTask);
-            }
             if(curTaskName != curTask.taskName)
-            {                
-                if(curTaskName == prevTask.taskName)
-                {
-                    curTask = prevTask;
-                    return;
-                }
-
+            {
+                addTaskToCache(curTask);
                 curTask = new Task(curTaskName);
-
             }
                 
-            curTask.endTime = DateTime.Now;
-            
+            curTask.endTime = DateTime.Now;            
         }
 
         public void addTaskToCache(Task task)
@@ -147,11 +129,13 @@ namespace TrackerV2
         public string taskName { get; set; }
         public DateTime startedTime { get; set; }
         public DateTime endTime { get; set; }
+        public bool useful { get; set; }
         public Task(string _taskname)
         {
             taskName = _taskname;
             startedTime = DateTime.Now;
             endTime = DateTime.Now;
+            useful = false;
         }
     }
 }

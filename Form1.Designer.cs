@@ -38,6 +38,7 @@ namespace TrackerV2
             this.update = new System.Windows.Forms.Timer(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -98,7 +99,7 @@ namespace TrackerV2
             // update
             // 
             this.update.Enabled = true;
-            this.update.Interval = 1000;
+            this.update.Interval = 500;
             this.update.Tick += new System.EventHandler(this.update_Tick);
             // 
             // label2
@@ -126,6 +127,16 @@ namespace TrackerV2
             this.label3.Text = "Processing";
             this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(422, 82);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "Settings";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 13F);
@@ -133,6 +144,7 @@ namespace TrackerV2
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(755, 114);
             this.ControlBox = false;
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.progressBar1);
@@ -162,6 +174,7 @@ namespace TrackerV2
         private System.Windows.Forms.Timer update;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button1;
     }
 }
 
