@@ -1,0 +1,12 @@
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\bin\Debug\TrackerV2.exe.config
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\bin\Debug\TrackerV2.exe
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\bin\Debug\TrackerV2.pdb
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.csprojAssemblyReference.cache
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.Form1.resources
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.Properties.Resources.resources
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.csproj.GenerateResource.cache
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.csproj.CoreCompileInputs.cache
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.exe
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.pdb
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.login.resources
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.register.resources
