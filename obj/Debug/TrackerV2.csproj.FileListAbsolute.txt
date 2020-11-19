@@ -10,3 +10,7 @@ C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.exe
 C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.pdb
 C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.login.resources
 C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.register.resources
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\bin\Debug\Newtonsoft.Json.dll
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\bin\Debug\Newtonsoft.Json.xml
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.history.resources
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.csproj.CopyComplete

@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace TrackerV2
 {
@@ -37,6 +38,12 @@ namespace TrackerV2
         {
             InitializeComponent();
             email = _email;
+
+            if(Properties.Settings.Default.cache == null)
+            {
+                Properties.Settings.Default.cache = new StringCollection();
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -53,10 +60,56 @@ namespace TrackerV2
         {
             Application.Exit();
         }
-
+        Task curTask = new Task("Tracker");
+        Task prevTask = new Task("Tracker");
+        string prevTaskName = "Tracker";
         private void update_Tick(object sender, EventArgs e)
         {
-            textBox1.Text = GetActiveWindowTitle();
+            DateTime startOfDay = DateTime.Now.Date;
+
+            progressBar1.Value = (int)((DateTime.Now - startOfDay).TotalSeconds / 86400f*100f);
+            label3.Text = progressBar1.Value + " %";
+            string curTaskName= GetActiveWindowTitle();
+            if(curTaskName == null) { return; }
+            if (curTaskName.Contains("-"))
+            {
+                curTaskName = curTaskName.Substring(curTaskName.LastIndexOf('-'));
+            }
+            double timeSpent = (curTask.endTime - curTask.startedTime).TotalSeconds;
+            label2.Text = curTask.taskName +"  :"+ timeSpent;
+
+
+            if(timeSpent > 10)
+            {
+                prevTask = curTask;
+            }
+            if(prevTaskName != prevTask.taskName)
+            {
+                prevTaskName = prevTask.taskName;
+                addTaskToCache(prevTask);
+            }
+            if(curTaskName != curTask.taskName)
+            {                
+                if(curTaskName == prevTask.taskName)
+                {
+                    curTask = prevTask;
+                    return;
+                }
+
+                curTask = new Task(curTaskName);
+
+            }
+                
+            curTask.endTime = DateTime.Now;
+            
+        }
+
+        public void addTaskToCache(Task task)
+        {
+            string json = JsonConvert.SerializeObject(task);
+            Properties.Settings.Default.cache.Add(json);
+            Properties.Settings.Default.Save();
+            return;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -71,8 +124,34 @@ namespace TrackerV2
             {
 
             }
-
+            
            // Properties.Settings.Default.cache.Add()
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            history his = new history();
+            his.ShowDialog();
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+
+
+    [Serializable]
+    public class Task
+    {
+        public string taskName { get; set; }
+        public DateTime startedTime { get; set; }
+        public DateTime endTime { get; set; }
+        public Task(string _taskname)
+        {
+            taskName = _taskname;
+            startedTime = DateTime.Now;
+            endTime = DateTime.Now;
         }
     }
 }
