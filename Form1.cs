@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -20,6 +21,7 @@ namespace TrackerV2
         [DllImport("user32.dll")]
         static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
 
+
         private string GetActiveWindowTitle()
         {
             const int nChars = 256;
@@ -33,10 +35,12 @@ namespace TrackerV2
             return null;
         }
 
+
+
         string email = "";
         public Form1(string _email)
         {
-            Properties.Settings.Default.Reset();
+          //  Properties.Settings.Default.Reset();
             InitializeComponent();
             email = _email;
 
@@ -61,7 +65,7 @@ namespace TrackerV2
         {
             Application.Exit();
         }
-        Task curTask = new Task("Tracker");
+        Task curTask = new Task("Tracker","fileName");
         private void update_Tick(object sender, EventArgs e)
         {
             DateTime startOfDay = DateTime.Now.Date;
@@ -69,30 +73,56 @@ namespace TrackerV2
             progressBar1.Value = (int)((DateTime.Now - startOfDay).TotalSeconds / 86400f*100f);
             label3.Text = progressBar1.Value + " %";
             string curTaskName= GetActiveWindowTitle();
+           
             if(curTaskName == null) { return; }
-          /*  if (curTaskName.Contains("-"))
-            {
-                curTaskName = curTaskName.Substring(curTaskName.LastIndexOf('-'));
-            }*/
-            double timeSpent = (curTask.endTime - curTask.startedTime).TotalSeconds;
-            label2.Text = curTask.taskName +"  :"+ timeSpent;
 
-            if(curTaskName != curTask.taskName)
+
+           
+            /*  if (curTaskName.Contains("-"))
+              {
+                  curTaskName = curTaskName.Substring(curTaskName.LastIndexOf('-'));
+              }*/
+            double timeSpent = (curTask.endTime - curTask.startedTime).TotalSeconds;
+
+            label2.Text = curTask.taskName + "  :" + timeSpent;
+            if (curTaskName != curTask.titleName)
             {
-                addTaskToCache(curTask);
-                curTask = new Task(curTaskName);
+                Process[] processes = Process.GetProcesses();
+                bool check = false;
+                string curTaskFile = "";
+                foreach (Process process in processes)
+                {
+                    if (process.MainWindowTitle == curTaskName)
+                    {
+                        curTaskFile = process.ProcessName;
+                        check = true;
+                        break;
+                    }
+                }
+                if (!check)
+                {
+                    curTaskFile = "System";
+                }
+
+                if (timeSpent > 15)
+                {
+                    foreach(string goodTag in Properties.Settings.Default.positive)
+                    {
+                        if (curTask.taskName.ToLower().Contains(goodTag.ToLower()))
+                        {
+                            curTask.useful = true;
+                            break;
+                        }
+                    }
+                    Tracker.addTaskToCache(curTask);
+                }
+                curTask = new Task(curTaskFile,curTaskName);
             }
                 
             curTask.endTime = DateTime.Now;            
         }
 
-        public void addTaskToCache(Task task)
-        {
-            string json = JsonConvert.SerializeObject(task);
-            Properties.Settings.Default.cache.Add(json);
-            Properties.Settings.Default.Save();
-            return;
-        }
+       
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -120,22 +150,68 @@ namespace TrackerV2
         {
 
         }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            customTask task = new customTask();
+            task.ShowDialog();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Settings settings = new Settings();
+            settings.ShowDialog();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 
 
     [Serializable]
     public class Task
     {
+        public string titleName { get; set; }
         public string taskName { get; set; }
         public DateTime startedTime { get; set; }
         public DateTime endTime { get; set; }
         public bool useful { get; set; }
-        public Task(string _taskname)
+        public Task(string _taskname, string _titleName)
         {
             taskName = _taskname;
+            titleName = _titleName;
             startedTime = DateTime.Now;
             endTime = DateTime.Now;
             useful = false;
+        }
+    }
+
+    public static class Tracker
+    {
+        public static void addTaskToCache(Task task)
+        {
+            string json = JsonConvert.SerializeObject(task);
+            if (Properties.Settings.Default.cache.Count > 0)
+            {
+                Task lastTask = JsonConvert.DeserializeObject<Task>(Properties.Settings.Default.cache[Properties.Settings.Default.cache.Count - 1]);
+                if (lastTask.taskName == task.taskName)
+                {
+                    lastTask.endTime = task.endTime;
+                    Properties.Settings.Default.cache[Properties.Settings.Default.cache.Count - 1] = JsonConvert.SerializeObject(lastTask);
+                }
+                else
+                {
+                    Properties.Settings.Default.cache.Add(json);
+                }
+            }
+            else
+            {
+                Properties.Settings.Default.cache.Add(json);
+            }
+            Properties.Settings.Default.Save();
+            return;
         }
     }
 }

@@ -19,12 +19,44 @@ namespace TrackerV2
         public history()
         {
             InitializeComponent();
+            dateTimePicker1.Value = DateTime.Now.Date.AddDays(0);
+            dateTimePicker2.Value = dateTimePicker1.Value.Date;
+            dateTimePicker3.Value = DateTime.Now.Date.AddDays(1);
+            dateTimePicker4.Value = dateTimePicker3.Value.Date;
+            load();
+            loaded = true;
+
+        }
+
+        public void load()
+        {
+            listView1.Items.Clear();
+
             StringCollection collection = Properties.Settings.Default.cache;
             jsonCollection = collection;
-          //  this.Text = "(" + collection.Count + ")";
+            int goodSeconds = 0;
+            //  this.Text = "(" + collection.Count + ")";
             foreach (string task_json in collection)
             {
                 Task task = JsonConvert.DeserializeObject<Task>(task_json);
+
+                if(textBox1.Text != "")
+                {
+                    if (!task.taskName.ToLower().Contains(textBox1.Text.ToLower()))
+                    {
+                        continue;
+                    }
+                }
+                DateTime sTime = dateTimePicker1.Value.Date;
+                sTime.AddSeconds(dateTimePicker2.Value.TimeOfDay.TotalSeconds);
+
+                DateTime eTime = dateTimePicker3.Value.Date;
+                eTime.AddSeconds(dateTimePicker4.Value.TimeOfDay.TotalSeconds);
+
+                if(task.startedTime < sTime || task.startedTime >eTime)
+                {
+                    continue;
+                }
 
                 ListViewItem item = new ListViewItem(task.taskName);
                 TimeSpan spentTime = (task.endTime - task.startedTime);
@@ -34,16 +66,23 @@ namespace TrackerV2
                     time += spentTime.Hours.ToString("n0") + "h ";
                 }
                 if (spentTime.TotalMinutes > 0) { time += spentTime.Minutes.ToString("n0") + "m "; }
-                time = spentTime.Seconds.ToString("n0") + "s";
+                time += spentTime.Seconds.ToString("n0") + "s";
                 item.SubItems.Add(time);
                 item.SubItems.Add(String.Format("{0:MM/dd} {0:HH:mm:ss}", task.startedTime));
                 item.SubItems.Add(String.Format("{0:MM/dd} {0:HH:mm:ss}", task.endTime));
+                item.SubItems.Add(task_json.GetHashCode().ToString());
                 item.Checked = task.useful;
+                if (task.useful)
+                {
+                    goodSeconds += (int)(task.startedTime - task.endTime).TotalSeconds;
+                }
                 listView1.Items.Add(item);
             }
-
-            loaded = true;
-
+            DateTime startOfDay = DateTime.Now.Date;
+            int secondsElapsed = (int)(DateTime.Now - startOfDay).TotalSeconds;
+            int usefulPerc = (int)((float)goodSeconds / (float)secondsElapsed * -100f);
+            pictureBox2.Height = 379 - (int)((float)usefulPerc / 100f * 379f);
+            label4.Text = usefulPerc + " %";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -66,38 +105,27 @@ namespace TrackerV2
         {
             for (int i = 0; i < listView1.Items.Count; i++)
             {
-                Task task = JsonConvert.DeserializeObject<Task>(jsonCollection[i]);
-
-                if (listView1.Items[i].Checked != task.useful)
+                for (int x = 0; x < Properties.Settings.Default.cache.Count; x++)
                 {
-                    task.useful = listView1.Items[i].Checked;
-                    if (jsonCollection[i] == Properties.Settings.Default.cache[i])
+                    string task_json = Properties.Settings.Default.cache[x];
+                    if (task_json.GetHashCode().ToString() == listView1.Items[i].SubItems[4].Text)
                     {
-                        Properties.Settings.Default.cache[i] = JsonConvert.SerializeObject(task);
-                        Properties.Settings.Default.Save();
-                        return;
-                    }
-                    else
-                    {
-                        for (int x = 0; x < Properties.Settings.Default.cache.Count; x++)
-                        {
-                            string task_json = Properties.Settings.Default.cache[x];
-                            if (task_json == jsonCollection[i])
-                            {
-                                Properties.Settings.Default.cache[x] = JsonConvert.SerializeObject(task);
-                                Properties.Settings.Default.Save();
-                                return;
-                                break;
-                            }
-                        }
-                    }
+                        //  MessageBox.Show(taskJson);
+                        Task task = JsonConvert.DeserializeObject<Task>(task_json);
+                        task.useful = listView1.Items[i].Checked;
 
-                    MessageBox.Show("NOT FOUND!");
-                    MessageBox.Show(jsonCollection[i] + Environment.NewLine + Properties.Settings.Default.cache[i]);
-                    MessageBox.Show(jsonCollection[i].GetHashCode() + Environment.NewLine + Properties.Settings.Default.cache[i].GetHashCode());
+                        Properties.Settings.Default.cache[x] = JsonConvert.SerializeObject(task);
+                        Properties.Settings.Default.Save();
+                        break;
+                    }
                 }
             }
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            load();
         }
     }
 }

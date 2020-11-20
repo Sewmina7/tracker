@@ -14,3 +14,6 @@ C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\bin\Debug\Newtonsoft.Json.dll
 C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\bin\Debug\Newtonsoft.Json.xml
 C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.history.resources
 C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.csproj.CopyComplete
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.modifyTagList.resources
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.Settings.resources
+C:\Users\sewmi\source\repos\TrackerV2\TrackerV2\obj\Debug\TrackerV2.customTask.resources

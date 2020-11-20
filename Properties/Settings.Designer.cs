@@ -57,5 +57,27 @@ namespace TrackerV2.Properties {
                 this["cache"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection positive {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["positive"]));
+            }
+            set {
+                this["positive"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection negative {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["negative"]));
+            }
+            set {
+                this["negative"] = value;
+            }
+        }
     }
 }
